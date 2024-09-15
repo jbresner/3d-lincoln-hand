@@ -10,10 +10,18 @@
             overflow: hidden;
         }
     </style>
+    <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+    }
+  }
+</script>
 </head>
 <body>
     <!-- Import the latest version of three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r150/three.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r150/three.min.js"></script> -->
 
     <!-- Import the latest version of STLLoader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r150/examples/js/loaders/STLLoader.js"></script>
@@ -23,5 +31,8 @@
 
     <!-- Import external JavaScript file -->
     <script src="script.js"></script>
+
+    
+    
 </body>
 </html>
