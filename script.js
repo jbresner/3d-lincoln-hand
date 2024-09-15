@@ -1,6 +1,5 @@
 let scene, camera, renderer, controls;
 
-// Function to initialize the scene
 function init() {
     // Scene setup
     scene = new THREE.Scene();
@@ -45,16 +44,27 @@ function init() {
 
     // Load the STL file
     const loader = new THREE.STLLoader();
-    loader.load('./hand.stl', function (geometry) {
-        // Hide loading indicator after successful loading
-        loadingElement.style.display = 'none';
+    loader.load('./path/to/your-large-file.stl', function (geometry) {
+        // Center the geometry
+        geometry.center();
 
         // Create material and mesh
         const material = new THREE.MeshStandardMaterial({ color: 0x606060 });
         const mesh = new THREE.Mesh(geometry, material);
-        mesh.rotation.x = -0.5 * Math.PI;  // Align with Z-axis
-        mesh.scale.set(0.1, 0.1, 0.1);  // Adjust scale if necessary
+
+        // Adjust rotation (example: rotate 90 degrees along X-axis)
+        mesh.rotation.x = -Math.PI / 2;
+
+        // Adjust position if needed (example: move upward on Y-axis by 2 units)
+        mesh.position.set(0, 2, 0);
+
+        // Adjust scale if needed (example: scale uniformly to 50%)
+        mesh.scale.set(0.5, 0.5, 0.5);
+
         scene.add(mesh);
+
+        // Hide loading indicator after successful loading
+        loadingElement.style.display = 'none';
 
     }, function (xhr) {
         // Update loading progress
