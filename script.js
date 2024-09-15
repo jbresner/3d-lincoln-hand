@@ -5,8 +5,8 @@ function init() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xeeeeee);
 
-    // Camera setup
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // Camera setup with adjusted near and far clipping planes
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
     camera.position.set(0, 0, 10);
 
     // Renderer setup
@@ -19,6 +19,8 @@ function init() {
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
     controls.enableZoom = true;
+    controls.minDistance = 0.5;  // Limit how close you can zoom in
+    controls.maxDistance = 50;   // Limit how far you can zoom out
 
     // Add ambient light
     const ambientLight = new THREE.AmbientLight(0x404040, 2);
@@ -58,8 +60,12 @@ function init() {
         // Adjust position if needed (example: move upward on Y-axis by 2 units)
         mesh.position.set(0, 2, 0);
 
-        // Adjust scale if needed (example: scale uniformly to 50%)
-        mesh.scale.set(0.5, 0.5, 0.5);
+        // Adjust scale if needed (example: scale uniformly to 10%)
+        mesh.scale.set(0.1, 0.1, 0.1);
+
+        // Log bounding box to inspect size and position
+        const boundingBox = new THREE.Box3().setFromObject(mesh);
+        console.log(boundingBox);
 
         scene.add(mesh);
 
