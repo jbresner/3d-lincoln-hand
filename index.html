@@ -15,20 +15,18 @@
     "imports": {
       "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
       "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
-    }
+    };
+      import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const controls = new OrbitControls( camera, renderer.domElement );
+const loader = new GLTFLoader();  
   }
 </script>
 </head>
 <body>
-    <!-- Import the latest version of three.js -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r150/three.min.js"></script> -->
-
-    <!-- Import the latest version of STLLoader -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r150/examples/js/loaders/STLLoader.js"></script>
-
-    <!-- Import the latest version of OrbitControls -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r150/examples/js/controls/OrbitControls.js"></script>
-
+  
     <!-- Import external JavaScript file -->
     <script src="script.js"></script>
 
