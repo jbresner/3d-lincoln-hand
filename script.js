@@ -30,7 +30,7 @@ function init() {
 
     // Load STL File
     const loader = new THREE.STLLoader();
-    loader.load('path/to/your/file.stl', function (geometry) {
+    loader.load('hand.stl', function (geometry) {
         const material = new THREE.MeshStandardMaterial({ color: 0x606060 });
         const mesh = new THREE.Mesh(geometry, material);
         mesh.rotation.x = -0.5 * Math.PI; // Rotate to align with Z-axis up
