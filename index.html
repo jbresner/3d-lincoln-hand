@@ -3,25 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic Three.js Test</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            width: 100vw;
-            height: 100vh;
-        }
-        #viewer {
-            width: 100vw;
-            height: 100vh;
-        }
-    </style>
+    <title>STL Viewer</title>
 </head>
 <body>
     <div id="viewer"></div>
 
-    <!-- Load the separated script.js -->
+    <!-- Add Script that Loads the three.js and dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+
+    <!-- Link to the external script.js file -->
     <script src="script.js"></script>
 </body>
 </html>
