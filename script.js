@@ -5,9 +5,9 @@ function init() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xeeeeee);
 
-    // Camera setup with adjusted near and far clipping planes
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
-    camera.position.set(0, 0, 10);
+    // Camera setup with adjusted position
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 0, 20);  // Move the camera farther away
 
     // Renderer setup
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -19,8 +19,8 @@ function init() {
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
     controls.enableZoom = true;
-    controls.minDistance = 0.5;  // Limit how close you can zoom in
-    controls.maxDistance = 50;   // Limit how far you can zoom out
+    controls.minDistance = 1;
+    controls.maxDistance = 100;
 
     // Add ambient light
     const ambientLight = new THREE.AmbientLight(0x404040, 2);
@@ -31,55 +31,36 @@ function init() {
     pointLight.position.set(10, 10, 10);
     scene.add(pointLight);
 
-    // Create loading indicator
-    const loadingElement = document.createElement('div');
-    loadingElement.setAttribute('id', 'loading');
-    loadingElement.style.position = 'absolute';
-    loadingElement.style.top = '10px';
-    loadingElement.style.left = '10px';
-    loadingElement.style.padding = '10px';
-    loadingElement.style.background = 'rgba(0, 0, 0, 0.8)';
-    loadingElement.style.color = '#fff';
-    loadingElement.style.fontSize = '14px';
-    loadingElement.innerHTML = 'Loading...';
-    document.body.appendChild(loadingElement);
-
     // Load the STL file
     const loader = new THREE.STLLoader();
     loader.load('./path/to/your-large-file.stl', function (geometry) {
         // Center the geometry
         geometry.center();
 
-        // Create material and mesh
         const material = new THREE.MeshStandardMaterial({ color: 0x606060 });
         const mesh = new THREE.Mesh(geometry, material);
 
-        // Adjust rotation (example: rotate 90 degrees along X-axis)
-        mesh.rotation.x = -Math.PI / 2;
+        // Adjust scale if needed (example: scale to 50%)
+        mesh.scale.set(0.5, 0.5, 0.5);
 
-        // Adjust position if needed (example: move upward on Y-axis by 2 units)
-        mesh.position.set(0, 2, 0);
-
-        // Adjust scale if needed (example: scale uniformly to 10%)
-        mesh.scale.set(0.1, 0.1, 0.1);
-
-        // Log bounding box to inspect size and position
+        // Calculate the bounding box and set the camera to focus on the model
         const boundingBox = new THREE.Box3().setFromObject(mesh);
-        console.log(boundingBox);
+        const center = boundingBox.getCenter(new THREE.Vector3());
+        const size = boundingBox.getSize(new THREE.Vector3());
+
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const fov = camera.fov * (Math.PI / 180);
+        const cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
+
+        camera.position.z = center.z + cameraZ * 1.5;  // Adjust camera based on model size
+        camera.lookAt(center);  // Ensure camera is looking at the model
 
         scene.add(mesh);
 
-        // Hide loading indicator after successful loading
-        loadingElement.style.display = 'none';
-
     }, function (xhr) {
-        // Update loading progress
-        const progress = Math.round((xhr.loaded / xhr.total) * 100);
-        loadingElement.innerHTML = 'Loading: ' + progress + '%';
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
     }, function (error) {
-        // Handle error
-        console.error('An error happened while loading the STL file:', error);
-        loadingElement.innerHTML = 'Failed to load the model';
+        console.error('An error happened', error);
     });
 
     // Handle window resizing
@@ -97,7 +78,7 @@ function onWindowResize() {
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
-    controls.update();  // Only if OrbitControls are enabled
+    controls.update();
     renderer.render(scene, camera);
 }
 
