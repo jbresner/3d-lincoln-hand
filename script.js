@@ -37,7 +37,7 @@ function init() {
 
     // Load the STL file
     const loader = new THREE.STLLoader();
-    loader.load('./path/to/your-large-file.stl', function (geometry) {
+    loader.load('./hand.stl', function (geometry) {
         geometry.center();
 
         const material = new THREE.MeshStandardMaterial({ color: 0x606060 });
