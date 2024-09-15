@@ -31,7 +31,7 @@ function init() {
 
     // Load the STL file with progress and error logging
     const loader = new THREE.STLLoader();
-    loader.load('./cube.stl', function (geometry) {
+    loader.load('./hand.stl', function (geometry) {
         console.log("STL file loaded successfully");
 
         // Create material and mesh
