@@ -13,8 +13,12 @@ scriptThree.onload = () => {
     scriptOrbitControls.src = "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js";
     document.head.appendChild(scriptOrbitControls);
 
-    // Wait for STLLoader and OrbitControls to load
-    scriptSTLLoader.onload = () => scriptOrbitControls.onload = init;
+    // Wait for STLLoader and OrbitControls to load before initializing the scene
+    scriptSTLLoader.onload = () => {
+        scriptOrbitControls.onload = () => {
+            init();
+        };
+    };
 }
 
 let scene, camera, renderer, controls;
@@ -49,7 +53,7 @@ function init() {
 
     // Load STL file
     const loader = new THREE.STLLoader();
-    loader.load('hand.stl', function (geometry) {
+    loader.load('path/to/your/file.stl', function (geometry) {
         const material = new THREE.MeshStandardMaterial({ color: 0x606060 });
         const mesh = new THREE.Mesh(geometry, material);
         mesh.rotation.x = -0.5 * Math.PI;  // Align with Z-axis
