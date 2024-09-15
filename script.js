@@ -23,7 +23,7 @@ function init() {
     controls.panSpeed = 1.0;
 
     // Zoom limits to prevent disappearing
-    controls.minDistance = 0.1;    // Prevent zooming in too close
+    controls.minDistance = 0.01;    // Prevent zooming in too close
     controls.maxDistance = 100;    // Allow zooming out up to this distance
 
     // Add ambient light
