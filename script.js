@@ -5,62 +5,47 @@ function init() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xeeeeee);
 
-    // Camera setup with adjusted near and far clipping planes
+    // Camera setup
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
-    camera.position.set(0, 0, 20);
+    camera.position.set(0, 0, 20);  // Move the camera back a little for better visibility
 
     // Renderer setup
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;  // Enable shadow casting
     document.getElementById('viewer').appendChild(renderer.domElement);
 
     // OrbitControls setup
     controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.25;
-    controls.enableZoom = true;
-    controls.enablePan = true;
-    controls.minDistance = 0.1;
-    controls.maxDistance = 100;
+    controls.enableDamping = true;   // Smooth damping
+    controls.dampingFactor = 0.25;   // Damping factor
+    controls.enableZoom = true;      // Enable zoom
+    controls.enablePan = true;       // Enable panning
 
-    // Lighting setup
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2);  // Increased intensity
+    // Default Ambient Light for basic illumination
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);  // Simple ambient light
     scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 2);  // Brighter directional light
-    directionalLight.position.set(10, 10, 10);
-    directionalLight.castShadow = true;  // Enable shadows
-    directionalLight.shadow.bias = -0.001;  // Reduce shadow artifacts
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
-    scene.add(directionalLight);
-
-    const pointLight = new THREE.PointLight(0xffffff, 1.5, 100);  // Brighter point light
-    pointLight.position.set(5, 5, 5);
-    scene.add(pointLight);
-
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1);  // Soft overhead lighting
-    hemiLight.position.set(0, 20, 0);
-    scene.add(hemiLight);
 
     // Load the STL file
     const loader = new THREE.STLLoader();
-    loader.load('./hand.stl', function (geometry) {
-        geometry.center();
+    loader.load('./path/to/your-large-file.stl', function (geometry) {
+        geometry.center();  // Center the geometry
 
+        // Use MeshStandardMaterial (basic PBR material) for default lighting
         const material = new THREE.MeshStandardMaterial({
-            color: 0x606060,
-            roughness: 0.5,  // Adjust roughness to make the surface more reflective
-            metalness: 0.3   // Increase metalness for a more metallic look
+            color: 0x606060,   // Grey color
+            roughness: 0.8,    // Default roughness for diffuse reflection
+            metalness: 0       // No metallic reflection
         });
 
         const mesh = new THREE.Mesh(geometry, material);
-        mesh.rotation.x = -Math.PI / 2;
-        mesh.scale.set(0.5, 0.5, 0.5);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
+        mesh.rotation.x = -Math.PI / 2;  // Rotate model to face the camera properly
+        mesh.scale.set(0.5, 0.5, 0.5);  // Adjust scale as needed
         scene.add(mesh);
+
+    }, function (xhr) {
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    }, function (error) {
+        console.error('An error happened', error);
     });
 
     // Handle window resizing
