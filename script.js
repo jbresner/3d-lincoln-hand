@@ -5,59 +5,58 @@ function init() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xeeeeee);
 
-    // Camera setup with adjusted near and far clipping planes
+    // Camera setup
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
-    camera.position.set(0, 0, 20);  // Adjust camera position to a comfortable starting point
+    camera.position.set(0, 0, 20);  // Position the camera
 
     // Renderer setup
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementById('viewer').appendChild(renderer.domElement);
 
-    // OrbitControls setup with zooming and panning enabled
+    // OrbitControls setup
     controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;      // Smooth control damping
-    controls.dampingFactor = 0.25;      // Damping factor
-    controls.enableZoom = true;         // Enable zooming
-    controls.enablePan = true;          // Enable panning
-    controls.zoomSpeed = 1.2;           // Adjust zoom speed (optional)
-    
-    // Set zoom limits
-    controls.minDistance = 0.1;         // Minimum zoom distance (closer zoom)
-    controls.maxDistance = 100;         // Maximum zoom distance (further zoom)
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.25;
+    controls.enableZoom = true;
+    controls.enablePan = true;
 
-    // Add ambient light
-    const ambientLight = new THREE.AmbientLight(0x404040, 2);
+    // Ambient Light (provides uniform soft lighting)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);  // Increased intensity
     scene.add(ambientLight);
 
-    // Add a point light
-    const pointLight = new THREE.PointLight(0xffffff, 1);
-    pointLight.position.set(10, 10, 10);
-    scene.add(pointLight);
+    // Directional Light (acts like sunlight, positioned to illuminate the model)
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(10, 10, 10);  // Light from above and to the side
+    directionalLight.castShadow = true;
+    scene.add(directionalLight);
+
+    // Add another Point Light to brighten the dark side
+    const pointLight2 = new THREE.PointLight(0xffffff, 0.8, 100);
+    pointLight2.position.set(-5, -5, -5);  // Opposite side of the model
+    scene.add(pointLight2);
+
+    // Hemisphere Light (provides natural light from above and ground reflection from below)
+    const hemiLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.8);  // Sky and ground colors
+    hemiLight.position.set(0, 20, 0);  // Positioned above the model
+    scene.add(hemiLight);
 
     // Load the STL file
     const loader = new THREE.STLLoader();
     loader.load('./hand.stl', function (geometry) {
-        geometry.center();  // Center the model in the scene
+        geometry.center();  // Center the geometry
 
-        const material = new THREE.MeshStandardMaterial({ color: 0x606060 });
+        // Material with lower roughness and higher metalness to reflect more light
+        const material = new THREE.MeshStandardMaterial({
+            color: 0x606060,
+            roughness: 0.3,  // Lower roughness for smoother reflection
+            metalness: 0.5   // Higher metalness for more reflective surfaces
+        });
+
         const mesh = new THREE.Mesh(geometry, material);
-        mesh.rotation.x = -Math.PI / 2;  // Rotate the model for better viewing
-        mesh.scale.set(0.5, 0.5, 0.5);  // Adjust the scale if necessary
-
+        mesh.rotation.x = -Math.PI / 2;  // Rotate model for proper viewing
+        mesh.scale.set(0.5, 0.5, 0.5);  // Adjust scale as necessary
         scene.add(mesh);
-
-        // Calculate the bounding box and adjust the camera accordingly
-        const boundingBox = new THREE.Box3().setFromObject(mesh);
-        const center = boundingBox.getCenter(new THREE.Vector3());
-        const size = boundingBox.getSize(new THREE.Vector3());
-
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const fov = camera.fov * (Math.PI / 180);
-        const cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
-
-        camera.position.z = center.z + cameraZ * 1.5;  // Adjust the camera based on model size
-        camera.lookAt(center);  // Ensure camera is looking at the model
 
     }, function (xhr) {
         console.log((xhr.loaded / xhr.total * 100) + '% loaded');
@@ -80,7 +79,7 @@ function onWindowResize() {
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
-    controls.update();  // Updates the controls (including panning, zooming, rotating)
+    controls.update();  // Update controls for smooth interaction
     renderer.render(scene, camera);
 }
 
